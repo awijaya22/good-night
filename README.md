@@ -52,5 +52,110 @@ index(user_id, clock_in_at)  // to support requirement 1
 index(follower_id, followed_id, deleted_at) // to support requirement 2 and 3
 
 
-## [TODO] API Request
+## API Request
+### User Clock In
+- [POST] /users/{id}/clock-in
+- Request Body: {}
+- Response: 
+```
+{
+    "id": 4,
+    "user_id": 1,
+    "clock_in_at": "2025-04-14T17:03:04.715Z",
+    "clock_out_at": null,
+    "created_at": "2025-04-14T17:03:04.000Z"
+}
+```
+
+### User Clock Out
+- [POST] /users/{id}/clock-out
+- Request Body: {}
+- Response: 
+```
+{
+    "user_id": 1,
+    "clock_out_at": "2025-04-14T17:03:30.844Z",
+    "id": 4,
+    "clock_in_at": "2025-04-14T17:03:04.715Z",
+    "created_at": "2025-04-14T17:03:04.000Z"
+}
+```
+
+### Get User Sleep Records
+- [GET] /users/{id}/sleep-records
+- Request Body: {}
+- Response:
+```
+[
+    {
+        "id": 2,
+        "user_id": 1,
+        "clock_in_at": "2025-04-14T16:52:29.990Z",
+        "clock_out_at": "2025-04-14T16:52:32.153Z",
+        "created_at": "2025-04-14T16:52:29.000Z"
+    },
+    {
+        "id": 1,
+        "user_id": 1,
+        "clock_in_at": "2025-04-14T16:39:31.402Z",
+        "clock_out_at": "2025-04-14T16:51:54.014Z",
+        "created_at": "2025-04-14T16:39:31.000Z"
+    }
+]
+```
+### Follow User
+- [POST] /users/{id}/follow
+- Request Body:
+```
+{
+  "followed_id": 1
+}
+```
+- Response:
+```
+{
+    "message": "Now following user 1"
+}
+```
+
+### Unfollow User
+- [POST] /users/{id}/unfollow
+- Request Body:
+```
+{
+  "followed_id": 2
+}
+```
+- Response:
+```
+{
+    "message": "Unfollowed user 2"
+}
+```
+### Get Following Sleep Records
+- [GET] /users/{id}/followings/sleep-records
+- Request Body: {}
+- Response:
+```
+[
+    {
+        "id": 1,
+        "user_id": 1,
+        "clock_in_at": "2025-04-14T16:39:31.402Z",
+        "clock_out_at": "2025-04-14T16:51:54.014Z",
+        "created_at": "2025-04-14T16:39:31.000Z",
+        "duration_seconds": 742
+    },
+    {
+        "id": 4,
+        "user_id": 1,
+        "clock_in_at": "2025-04-14T17:03:04.715Z",
+        "clock_out_at": "2025-04-14T17:03:30.844Z",
+        "created_at": "2025-04-14T17:03:04.000Z",
+        "duration_seconds": 26
+    }
+]
+```
+
+
 ## [TODO] How to run 
