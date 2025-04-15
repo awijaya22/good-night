@@ -93,9 +93,8 @@ RSpec.describe "Follows API", type: :request do
   
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
-      puts "JSON: #{json}"
   
-      durations = json.map { |record| record["duration"] }
+      durations = json.map { |record| record["duration_seconds"] }
   
       expect(durations).to eq(durations.sort.reverse)
     end
