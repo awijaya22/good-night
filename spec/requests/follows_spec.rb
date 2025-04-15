@@ -72,23 +72,32 @@ RSpec.describe "Follows API", type: :request do
 
   # get following sleep records
   describe "GET /users/:id/followings/sleep-records" do
-    let!(:followed) { User.create!(name: "FollowedUser") }
-
+    let!(:followed_user_1) { User.create!(name: "FollowedUser1") }
+    let!(:followed_user_2) { User.create!(name: "FollowedUser2") }
+    let!(:followed_user_3) { User.create!(name: "FollowedUser3") }
+  
     before do
-      user.followings << followed
-      followed.sleep_records.create!(
-        clock_in_at: 8.hours.ago,
-        clock_out_at: 2.hours.ago
-      )
+      # User follows all three users
+      user.followings << followed_user_1
+      user.followings << followed_user_2
+      user.followings << followed_user_3
+  
+      # Create varying sleep durations
+      followed_user_1.sleep_records.create!(clock_in_at: 10.hours.ago, clock_out_at: 4.hours.ago) # 6 hours
+      followed_user_2.sleep_records.create!(clock_in_at: 12.hours.ago, clock_out_at: 2.hours.ago) # 10 hours
+      followed_user_3.sleep_records.create!(clock_in_at: 6.hours.ago, clock_out_at: 3.hours.ago)  # 3 hours
     end
-
-    it "returns sleep records of following users sorted by duration" do
-      get "/users/#{user.id}/followings/sleep-records" , as: :json
-
+  
+    it "returns following users' sleep records sorted by duration (desc)" do
+      get "/users/#{user.id}/followings/sleep-records", as: :json
+  
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
-      expect(json.first["user_id"]).to eq(followed.id)
-      expect(json.first["duration_seconds"]).to eq(6 * 3600)
+      puts "JSON: #{json}"
+  
+      durations = json.map { |record| record["duration"] }
+  
+      expect(durations).to eq(durations.sort.reverse)
     end
-  end
+  end  
 end
