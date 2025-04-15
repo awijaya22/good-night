@@ -166,3 +166,21 @@ index(follower_id, followed_id, deleted_at) // to support requirement 2 and 3
     }
 ]
 ```
+
+## Next step for scalability
+- follows table 
+    - here we used mysql, and it could easily handle around 1M user (we have index)
+    - when bottleneck in query happened, there are somethings that could be done:
+        - cache with redis in front. could invalidate when new followed is done, or with ttl (as an user account mature, there might be less new following happened)
+    - the current state of the art is to pair it with graph database (used by big social media company)
+      - it would be suitable if we next would like to scale into nth-degree friends recommendation
+- sleep_records table
+    - first of all, we could have duration as a column instead of calculating whenever we query. 
+        - cause clock_out and clock_in could not be modify, so there won't be any problem handling data consistency. 
+        - and on the pro side, we could directly query order by duration. (will faster the process with small sacrifice on the memory)
+    - problem: high volume of read and write in sleep_records
+        - as I believed, we don't mind not having read consistency (delayed read on your following list data should be okay)
+        - could be solve with having redis cache in front of mysql. (cache by query key as redis key, and response as value) to solve high volume read.
+        - we could also insert everything into redis first, then update with cron job every X minutes into the DB. as writing into redis is faster.
+
+There could be lots of way to tackle problem, as there might be other problem that is not mentioned above. I do list out the usual problem that we might encounter if user base grows. We could discuss more on google meet if there is any more question or problems that would like to be asked. 
