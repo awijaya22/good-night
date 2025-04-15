@@ -14,7 +14,7 @@ class SleepRecordsController < ApplicationController
       record = @user.sleep_records.where(clock_out_at: nil).order(created_at: :desc).first
   
       unless record
-        return render json: { error: "No active sleep record found to clock out." }, status: :not_found
+        return render json: { error: "User already has an active sleep session" }, status: :unprocessable_entity
       end
   
       record.clock_out_at = Time.current
