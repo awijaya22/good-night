@@ -3,6 +3,7 @@ class FollowingsController < ApplicationController
     before_action :set_user
   
     def sleep_records
+        # TODO: could be improved by using a query to get the sleep records of the followings
         one_week_ago = 1.week.ago
 
         records = SleepRecord
