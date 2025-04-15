@@ -3,6 +3,16 @@ class FollowsController < ApplicationController
     before_action :set_user
   
     def create
+      if params[:followed_id].blank?
+        render json: { error: "followed_id is required" }, status: :bad_request
+        return
+      end
+
+      if params[:followed_id] == @user.id
+        render json: { error: "Cannot follow yourself #{@user.id}" }, status: :unprocessable_entity
+        return
+      end
+
       followed = User.find_by(id: params[:followed_id])
       return render json: { error: "User to follow not found" }, status: :not_found unless followed
   
