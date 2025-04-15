@@ -1,8 +1,17 @@
 # README
 
-Build on:
+## Prerequisite:
 - ruby 3.4.2
 - rails 8.0.2
+- mysql
+
+## How to run 
+- install the dependencies with `bundle install`
+- make sure `config/database.yml` is modified to connect your local mysql 
+- run `rails db:create` , `rails db:migrate` , `rails db:seed` to create, migrate and seed the db respectively
+- run `rails s` to start your app up. it is accessible from `localhost:3000`
+- call the api (see below: API Request for example)  
+- you could run the test cases with `bundle exec rspec`
 
 ## Product Requirement
 We require some restful APIS to achieve the following:
@@ -25,6 +34,7 @@ This is 3rd requirement response example
 ## Assumption
 * registration and login is done 
 * user can't delete sleep_records, as the sleep_records should be insert only 
+* assuming previous week is 1 week ago from request time
 
 ## Database Design 
 ### Table: users
@@ -156,6 +166,3 @@ index(follower_id, followed_id, deleted_at) // to support requirement 2 and 3
     }
 ]
 ```
-
-
-## [TODO] How to run 
