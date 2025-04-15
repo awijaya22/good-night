@@ -51,16 +51,18 @@ RSpec.describe "SleepRecords API", type: :request do
   end
 
   describe "GET /users/:id/sleep-records" do
-    it "returns the user's sleep records" do
-      user.sleep_records.create!(clock_in_at: 10.hours.ago, clock_out_at: 2.hours.ago)
-      user.sleep_records.create!(clock_in_at: 1.day.ago, clock_out_at: 20.hours.ago)
+    it "returns the user's sleep records sorted by clock_in time" do
+      older_record = user.sleep_records.create!(clock_in_at: 1.day.ago, clock_out_at: 20.hours.ago)
+      newer_record = user.sleep_records.create!(clock_in_at: 10.hours.ago, clock_out_at: 2.hours.ago)
 
       get "/users/#{user.id}/sleep-records"
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.length).to eq(2)
-      expect(json.first["user_id"]).to eq(user.id)
+      expect(json.first["id"]).to eq(older_record.id)
+      expect(json.second["id"]).to eq(newer_record.id)
+      expect(json.first["clock_in_at"]).to be < json.second["clock_in_at"]
     end
   end
 end
